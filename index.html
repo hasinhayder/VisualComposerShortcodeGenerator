@@ -2,6 +2,7 @@
 <head>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
     <script src="//cdn.jsdelivr.net/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/handlebarsjs/1.3.0/handlebars.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -28,13 +29,17 @@
                         <input type="text" class="form-control param" placeholder="Param Name">
                         <input type="text" class="form-control value" placeholder="Value">
                         <input type="text" class="form-control group" placeholder="Group Name">
-                        <input type="checkbox" value="1" class="admin_label"> Admin 
+                        <input type="checkbox" value="1" class="admin_label"> Admin
 
                     </div>
                     <button type="button" class="btn btn-danger addnew">Add New</button>
                 </form>
             </div>
             <button id="generate" type="button" class="btn btn-success">Generate Code</button>
+            <form action="">
+                <br/><br/>
+                <textarea id="code" style="display: none;" class="form-control" rows="10"></textarea>
+            </form>
             <div id="placeholder" style="display: none;">
                 <form class="form-inline last" role="form" data-index="1">
                     <h3>Item 1</h3>
@@ -61,6 +66,16 @@
         </div>
     </div>
 </div>
+<script id="item" type="text/text/x-handlebars-template">
+array(
+    "type" => "{{t}}",
+    "heading" => __("{{heading}}"),
+    "param_name" => "{{p}}",
+    "value" => "{{v}}",{{#if group}}
+    "group" => "{{group}}",{{/if}} {{#if admin}}
+    "admin_label"=>true,{{/if}}
+),
+</script>
 <script type="application/javascript">
     var index = 1;
     $(document).ready(function(){
@@ -73,9 +88,21 @@
         });
 
         $("#generate").on("click",function(){
+            $("#code").html("");
+            var itemTemplate = Handlebars.compile($("#item").html());
             $("#container").find("form").each(function(){
-                alert($(this).find(".heading").val());
-            })
+                var heading = $(this).find(".heading").val();
+                var type = $(this).find(".type").val();
+                var param = $(this).find(".param").val();
+                var value = $(this).find(".value").val();
+                var group = $(this).find(".group").val();
+                var admin = $(this).find(".admin_label").is(":checked");
+                var params ={heading:heading, t:type, p:param,v:value,g:group,admin:admin};
+                var itemCode = itemTemplate(params);
+                $("#code").append(itemCode);
+            });
+
+            $("#code").show();
         });
     });
 </script>
