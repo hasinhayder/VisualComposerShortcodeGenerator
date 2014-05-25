@@ -8,14 +8,17 @@ $(document).ready(function(){
     });
 
     $("#generate").on("click",function(){
+
         var json = [];
+        var scp = "";
+        var itemTemplate = Handlebars.compile($("#item").html());
+        var scTemplate = Handlebars.compile($("#shortcodetemplate").html());
+
         $("#code").html("");
         $("#importarea").html("");
         $("#wpcode").html("");
         $("#wpcode").append("function "+$("#scfuncname").val()+"($atts, $content=null)\n{\n\textract(shortcode_atts(array(\n");
-        var scp = "";
-        var itemTemplate = Handlebars.compile($("#item").html());
-        var scTemplate = Handlebars.compile($("#shortcodetemplate").html());
+
         $("#container").find("form").each(function(){
             var id = $(this).attr("id");
             var heading = $(this).find(".heading").val();
@@ -25,9 +28,10 @@ $(document).ready(function(){
             $("#wpcode").append("\t\t'"+param+"' => '"+value+"',\n");
             var group = $(this).find(".group").val();
             var admin = $(this).find(".admin_label").is(":checked");
-            var params ={heading:heading, t:type, p:param,v:value,g:group,admin:admin,form:id};
-            json.push(params);
+            var params ={h:heading, t:type, p:param,v:value,g:group,a:admin,f:id};
             var itemCode = itemTemplate(params);
+
+            json.push(params);
             scp += itemCode;
 
         });
@@ -43,10 +47,11 @@ $(document).ready(function(){
         $(".g").show();
         $("#code").show();
         $("#wpcode").show();
-//            alert(json);
+
         //add the schortcode defs
         delete(scparams['scp']);
         json.push(scparams);
+
         $("#importarea").val(JSON.stringify(json));
         $("#importarea").show();
     });
@@ -72,7 +77,7 @@ $(document).ready(function(){
         for(i in json){
             var param = json[i];
             addElement();
-            setElementValues(param.form, param.t, param.heading, param.p, param.v, param.g, param.admin)
+            setElementValues(param.f, param.t, param.h, param.p, param.v, param.g, param.a)
         }
         $(".j").hide();
     });
