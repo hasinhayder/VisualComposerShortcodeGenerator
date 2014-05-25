@@ -86,7 +86,7 @@ $(document).ready(function(){
         index++;
         $("#container").append($("#placeholder").html());
         var lastItem = $("#container").find(".last");
-        $(lastItem).find("h3").html("Item "+index);
+        $(lastItem).find("h4").html("Item "+index);
         $(lastItem).removeClass("last");
         $(lastItem).attr("id","form_"+index);
     }

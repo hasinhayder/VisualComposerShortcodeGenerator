@@ -9,6 +9,18 @@
         .g{
             display: none;
         }
+
+        h3{
+            padding-bottom: 10px;
+            margin:40px 0px 20px 0px;
+            font-size: 16px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        h4{
+            font-size: 14px;
+
+        }
     </style>
 </head>
 <body>
@@ -16,6 +28,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1>Visual Composer Shortcode Genarator</h1>
+            <h3>Shortcode Definition</h3>
         </div>
     </div>
     <div class="row">
@@ -27,7 +40,7 @@
                         <input type="text" class="form-control" id="scname" placeholder="Enter Shortcode Name">
                     </div>
                     <div class="form-group">
-                        <label for="scfuncname">Shortcode Function Name</label>
+                        <label for="scfuncname">Shortcode Function Name (WordPress Function)</label>
                         <input type="text" class="form-control" id="scfuncname" placeholder="Enter Shortcode Function Name">
                     </div>
                     <div class="form-group">
@@ -36,6 +49,7 @@
                     </div>
                 </form>
             </div>
+            <h3>Build the Form</h3>
             <div id="container">
 
             </div>
@@ -58,7 +72,7 @@
             </form>
             <div id="placeholder" style="display: none;">
                 <form class="form-inline last" role="form" data-index="1">
-                    <h3>Item 1</h3>
+                    <h4>Item 1</h4>
                     <div class="form-group">
                         <select class="form-control type">
                             <option value="0">Type</option>
