@@ -136,8 +136,8 @@ array(
             });
 
             var scparams = {sch: $("#scname").val(),scf:$("#scfuncname").val(),scc:$("#sccategory").val(),scp:scp};
-            var scparams2 = {sch: $("#scname").val(),scf:$("#scfuncname").val(),scc:$("#sccategory").val()};
             var shortcode = scTemplate(scparams);
+
 
             $("#code").val(shortcode);
 
@@ -148,7 +148,8 @@ array(
             $("#wpcode").show();
 //            alert(json);
             //add the schortcode defs
-            json.push(scparams2);
+            delete(scparams['scp']);
+            json.push(scparams);
             $("#importarea").val(JSON.stringify(json));
             $("#importarea").show();
         });
