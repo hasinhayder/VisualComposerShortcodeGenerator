@@ -19,27 +19,7 @@
     <div class="row">
         <div class="col-md-12">
             <div id="container">
-                <form id="form_1" class="form-inline" role="form" data-index="1">
-                    <h3>Item 1</h3>
-                    <div class="form-group">
-                        <select class="form-control type">
-                            <option value="0">Type</option>
-                            <option value="textfield">TextField</option>
-                            <option value="textarea_html">WYSIWYG</option>
-                            <option value="colorpicker">ColorPicker</option>
-                            <option value="attach_image">Single Image</option>
-                            <option value="attach_images">Gallery</option>
-                            <option value="dropdown">Dropdown</option>
-                        </select>
-                        <input type="text" class="form-control heading" placeholder="Heading">
-                        <input type="text" class="form-control param" placeholder="Param Name">
-                        <input type="text" class="form-control value" placeholder="Value">
-                        <input type="text" class="form-control group" placeholder="Group Name">
-                        <input type="checkbox" value="1" class="admin_label"> Admin
 
-                    </div>
-                    <button type="button" class="btn btn-danger addnew">Add New</button>
-                </form>
             </div>
             <button id="generate" type="button" class="btn btn-success">Generate Code</button>
             <button id="import" type="button" class="btn btn-success">Import Code</button>
@@ -96,15 +76,10 @@ array(
 ),
 </script>
 <script type="application/javascript">
-    var index = 1;
+    var index = 0;
     $(document).ready(function(){
         $("#container").on("click",".addnew", function(){
-            index++;
-            $("#container").append($("#placeholder").html());
-            var lastItem = $("#container").find(".last");
-            $(lastItem).find("h3").html("Item "+index);
-            $(lastItem).removeClass("last");
-            $(lastItem).attr("id","form_"+index);
+            addElement();
         });
 
         $("#generate").on("click",function(){
@@ -180,7 +155,9 @@ array(
 
         $("#hidejson").on("click",function(){
             $(".j").hide();
-        })
+        });
+
+        addElement();
     });
 </script>
 </body>
