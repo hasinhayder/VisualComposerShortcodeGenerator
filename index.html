@@ -135,7 +135,8 @@ array(
 
             });
 
-            var scparams = {sch: $("#scname").val(),scf:$("#scfuncname").val(),scc:$("#sccategory").val(),scp:scp}
+            var scparams = {sch: $("#scname").val(),scf:$("#scfuncname").val(),scc:$("#sccategory").val(),scp:scp};
+            var scparams2 = {sch: $("#scname").val(),scf:$("#scfuncname").val(),scc:$("#sccategory").val()};
             var shortcode = scTemplate(scparams);
 
             $("#code").val(shortcode);
@@ -146,7 +147,8 @@ array(
             $("#code").show();
             $("#wpcode").show();
 //            alert(json);
-
+            //add the schortcode defs
+            json.push(scparams2);
             $("#importarea").val(JSON.stringify(json));
             $("#importarea").show();
         });
@@ -161,6 +163,11 @@ array(
         $("#importjson").on("click",function(){
             var jsonstring = $("#importarea").val();
             var json = $.parseJSON(jsonstring);
+            var scparams = json.pop();
+
+            $("#scname").val(scparams.sch);
+            $("#scfuncname").val(scparams.scf)
+            $("#sccategory").val(scparams.scc);
 
             $("#container").html("");
             index=0;
