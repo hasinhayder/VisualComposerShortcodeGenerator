@@ -42,6 +42,7 @@
                 </form>
             </div>
             <button id="generate" type="button" class="btn btn-success">Generate Code</button>
+            <button id="import" type="button" class="btn btn-success">Import Code</button>
             <form action="">
                 <br/><br/>
                 <h3 class="g">VC Mapping</h3>
@@ -49,6 +50,13 @@
                 <br/><br/>
                 <h3 class="g">WP Shortcode Helper</h3>
                 <textarea id="wpcode" style="display: none;" class="form-control" rows="10"></textarea>
+                <h3 class="j g importlabel">Paste JSON</h3>
+                <textarea id="importarea" style="display: none;" class="j form-control" rows="10"></textarea>
+                <br/>
+                <button id="importjson" type="button" class=" j g btn btn-danger">Import Code</button>
+                <button id="hidejson" type="button" class=" j g btn btn-danger">Hide</button>
+
+
             </form>
             <div id="placeholder" style="display: none;">
                 <form class="form-inline last" role="form" data-index="1">
@@ -77,7 +85,7 @@
         </div>
     </div>
 </div>
-<script id="item" type="text/text/x-handlebars-template">
+<script id="item" type="text/x-handlebars-template">
 array(
     "type" => "{{t}}",
     "heading" => __("{{heading}}"),
@@ -100,10 +108,14 @@ array(
         });
 
         $("#generate").on("click",function(){
+            var json = [];
             $("#code").html("");
+            $("#importarea").html("");
+            $("#wpcode").html("");
             $("#wpcode").append("extract(shortcode_atts(array(\n");
             var itemTemplate = Handlebars.compile($("#item").html());
             $("#container").find("form").each(function(){
+                var id = $(this).attr("id");
                 var heading = $(this).find(".heading").val();
                 var type = $(this).find(".type").val();
                 var param = $(this).find(".param").val();
@@ -111,7 +123,8 @@ array(
                 $("#wpcode").append("'"+param+"' => '"+value+"',\n");
                 var group = $(this).find(".group").val();
                 var admin = $(this).find(".admin_label").is(":checked");
-                var params ={heading:heading, t:type, p:param,v:value,g:group,admin:admin};
+                var params ={heading:heading, t:type, p:param,v:value,g:group,admin:admin,form:id};
+                json.push(params);
                 var itemCode = itemTemplate(params);
                 $("#code").append(itemCode);
             });
@@ -119,7 +132,55 @@ array(
             $(".g").show();
             $("#code").show();
             $("#wpcode").show();
+//            alert(json);
+
+            $("#importarea").val(JSON.stringify(json));
+            $("#importarea").show();
         });
+
+        $("#import").on("click",function(){
+            $(".importlabel").show();
+            $("#importarea").show();
+            $("#importjson").show();
+            $("#hidejson").show();
+        });
+
+        $("#importjson").on("click",function(){
+            var jsonstring = $("#importarea").val();
+            var json = $.parseJSON(jsonstring);
+
+            $("#container").html("");
+            index=0;
+            for(i in json){
+                var param = json[i];
+                addElement();
+                setElementValues(param.form, param.t, param.heading, param.p, param.v, param.g, param.admin)
+            }
+            $(".j").hide();
+        });
+
+        function addElement(){
+            index++;
+            $("#container").append($("#placeholder").html());
+            var lastItem = $("#container").find(".last");
+            $(lastItem).find("h3").html("Item "+index);
+            $(lastItem).removeClass("last");
+            $(lastItem).attr("id","form_"+index);
+        }
+
+        function setElementValues(id,type,heading,param,value,group,admin){
+            $("#"+id).find(".heading").val(heading);
+            $("#"+id).find(".type").val(type);
+            $("#"+id).find(".param").val(param);
+            $("#"+id).find(".group").val(group);
+            $("#"+id).find(".value").val(value);
+            if(admin)
+            $("#"+id).find(".admin_label").prop("checked",true);
+        }
+
+        $("#hidejson").on("click",function(){
+            $(".j").hide();
+        })
     });
 </script>
 </body>
