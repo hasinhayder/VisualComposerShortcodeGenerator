@@ -1,5 +1,6 @@
 <html>
 <head>
+    <title>Visual Composer Shortcode Generator</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
     <script src="//cdn.jsdelivr.net/jquery/1.11.1/jquery.min.js"></script>
     <script src="//cdn.jsdelivr.net/handlebarsjs/1.3.0/handlebars.min.js"></script>
@@ -18,6 +19,22 @@
     </div>
     <div class="row">
         <div class="col-md-12">
+            <div id="shortcode">
+                <form action="">
+                    <div class="form-group">
+                        <label for="scname">Shortcode Name</label>
+                        <input type="text" class="form-control" id="scname" placeholder="Enter Shortcode Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="scfuncname">Shortcode Function Name</label>
+                        <input type="text" class="form-control" id="scfuncname" placeholder="Enter Shortcode Function Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sccategory">Shortcode Category</label>
+                        <input type="text" class="form-control" id="sccategory" placeholder="Enter Shortcode Category">
+                    </div>
+                </form>
+            </div>
             <div id="container">
 
             </div>
@@ -75,6 +92,17 @@ array(
     "admin_label"=>true,{{/if}}
 ),
 </script>
+<script id="shortcodetemplate" type="text/x-handlebars-template">
+    vc_map(array(
+        "name" => __("{{sch}}"),
+        "base" => "{{scf}}",
+        "class" => "",
+        "category" => __('{{scc}}'),
+        "params" => array(
+            {{{scp}}}
+        )
+    ));
+</script>
 <script type="application/javascript">
     var index = 0;
     $(document).ready(function(){
@@ -87,23 +115,33 @@ array(
             $("#code").html("");
             $("#importarea").html("");
             $("#wpcode").html("");
-            $("#wpcode").append("extract(shortcode_atts(array(\n");
+            $("#wpcode").append("function "+$("#scfuncname").val()+"($atts, $content=null)\n{\n\textract(shortcode_atts(array(\n");
+            var scp = "";
             var itemTemplate = Handlebars.compile($("#item").html());
+            var scTemplate = Handlebars.compile($("#shortcodetemplate").html());
             $("#container").find("form").each(function(){
                 var id = $(this).attr("id");
                 var heading = $(this).find(".heading").val();
                 var type = $(this).find(".type").val();
                 var param = $(this).find(".param").val();
                 var value = $(this).find(".value").val();
-                $("#wpcode").append("'"+param+"' => '"+value+"',\n");
+                $("#wpcode").append("\t\t'"+param+"' => '"+value+"',\n");
                 var group = $(this).find(".group").val();
                 var admin = $(this).find(".admin_label").is(":checked");
                 var params ={heading:heading, t:type, p:param,v:value,g:group,admin:admin,form:id};
                 json.push(params);
                 var itemCode = itemTemplate(params);
-                $("#code").append(itemCode);
+                scp += itemCode;
+
             });
-            $("#wpcode").append("),$atts));\n")
+
+            var scparams = {sch: $("#scname").val(),scf:$("#scfuncname").val(),scc:$("#sccategory").val(),scp:scp}
+            var shortcode = scTemplate(scparams);
+
+            $("#code").val(shortcode);
+
+            $("#wpcode").append("\t),$atts));\n\treturn $content;\n}")
+            $("#wpcode").append("\nadd_shortcode('"+$("#scfuncname").val()+"', '"+$("#scfuncname").val()+"');");
             $(".g").show();
             $("#code").show();
             $("#wpcode").show();
